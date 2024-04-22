@@ -67,7 +67,7 @@ runs:
 
         cat package.json
 
-        npm install
+        npm ci
         npx aoe_technology_radar-buildRadar
         npx aoe_technology_radar-generateJson
         npx aoe_technology_radar-createStaticFiles
