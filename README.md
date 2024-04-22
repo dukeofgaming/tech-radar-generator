@@ -12,7 +12,7 @@ graph LR
     GithubWorkflow -->|ZipArtifact| GithubActionArtifact[Github Action Artifact]
 
     subgraph GithubWorkflow
-        TechRadarAction[dvega-flexion/tech-radar-generator]
+        TechRadarAction[flexion/tech-radar-generator]
     end
 
 
@@ -63,7 +63,7 @@ jobs:
 
       - name: Generate Tech Radar
         id: deployment
-        uses: dvega-flexion/tech-radar-generator@v0.1.1
+        uses: flexion/tech-radar-generator@v0.1.3
         with:
           radar_name: My Radar
           directory: ./docs
