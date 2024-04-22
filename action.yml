@@ -67,7 +67,7 @@ runs:
 
         cat package.json
 
-        npm install
+        npm install --no-package-lock
         npm run build
         npm run generateJson
         npm run build:static
