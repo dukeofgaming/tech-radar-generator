@@ -67,10 +67,11 @@ runs:
 
         cat package.json
 
-        npm ci
-        npx aoe_technology_radar-buildRadar
-        npx aoe_technology_radar-generateJson
-        npx aoe_technology_radar-createStaticFiles
+        npm install
+        npm run build
+        npm run generateJson
+        npm run build:static
+
         PUBLIC_URL="${{ inputs.public_url }}" npm run build:static
 
     - name: Upload artifact
