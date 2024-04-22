@@ -48,6 +48,12 @@ runs:
       with:
         node-version: 18
 
+    - name: Override package.json
+      shell: bash
+      run: |
+        if [ -f ${{ inputs.directory }}/package.json ]; then
+          cp -r ${{ inputs.directory }}/package.json $GITHUB_WORKSPACE/package.json
+        fi
 
     #TODO: Parametrize radar version
     #TODO: Extract to script
@@ -58,7 +64,12 @@ runs:
         export PUBLIC_URL=${{ inputs.public_url }}
         export REACT_APP_RADAR_NAME="${{ inputs.radar_name }}"
 
-        npm ci
+        # If no package.json is present, copy the one from this action
+        if [ ! -f package.json ]; then
+          cp -r $GITHUB_WORKSPACE/package.json .
+        fi
+
+        npm install
         npx aoe_technology_radar-buildRadar
         npx aoe_technology_radar-generateJson
         npx aoe_technology_radar-createStaticFiles
