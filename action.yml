@@ -48,16 +48,6 @@ runs:
       with:
         node-version: 18
 
-    - name: Override package.json
-      shell: bash
-      run: |
-        pwd
-        ls -al
-
-        if [ -f ${{ inputs.directory }}/package.json ]; then
-          cp -r ${{ inputs.directory }}/package.json $GITHUB_WORKSPACE/package.json
-        fi
-
     #TODO: Parametrize radar version
     #TODO: Extract to script
     - name: Install AOE radar
@@ -72,7 +62,7 @@ runs:
 
         # If no package.json is present, copy the one from this action
         if [ ! -f package.json ]; then
-          cp -r $GITHUB_WORKSPACE/package.json .
+          cp -r $GITHUB_ACTION_PATH/package.json .
         fi
 
         npm install
