@@ -51,6 +51,8 @@ runs:
     - name: Override package.json
       shell: bash
       run: |
+        ls -al
+
         if [ -f ${{ inputs.directory }}/package.json ]; then
           cp -r ${{ inputs.directory }}/package.json $GITHUB_WORKSPACE/package.json
         fi
@@ -63,6 +65,8 @@ runs:
       run: |
         export PUBLIC_URL=${{ inputs.public_url }}
         export REACT_APP_RADAR_NAME="${{ inputs.radar_name }}"
+
+        ls -al
 
         # If no package.json is present, copy the one from this action
         if [ ! -f package.json ]; then
