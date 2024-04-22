@@ -51,6 +51,7 @@ runs:
     - name: Override package.json
       shell: bash
       run: |
+        pwd
         ls -al
 
         if [ -f ${{ inputs.directory }}/package.json ]; then
@@ -66,6 +67,7 @@ runs:
         export PUBLIC_URL=${{ inputs.public_url }}
         export REACT_APP_RADAR_NAME="${{ inputs.radar_name }}"
 
+        pwd
         ls -al
 
         # If no package.json is present, copy the one from this action
