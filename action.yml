@@ -65,7 +65,7 @@ runs:
           cp -r $GITHUB_ACTION_PATH/package.json .
         fi
 
-        ls -alR
+        cat package.json
 
         npm install
         npx aoe_technology_radar-buildRadar
