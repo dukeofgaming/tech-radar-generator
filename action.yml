@@ -71,9 +71,7 @@ runs:
 
         ls node_modules/.bin  # Debug: list the contents of node_modules/.bin
 
-        npx aoe_technology_radar buildRadar
-        npx aoe_technology_radar generateJson
-        npx aoe_technology_radar createStaticFiles
+        npm run build
 
         PUBLIC_URL="${{ inputs.public_url }}" npm run build:static
 
