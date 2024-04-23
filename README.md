@@ -66,8 +66,9 @@ jobs:
         uses: flexion/tech-radar-generator@v0.1.3
         with:
           radar_name: My Radar
-          directory: ./docs
-          public_url: /tech-radar # Since Github Pages is used, only the path is needed
+          directory: ./docs             # Directory where the radar directory is located
+          base_path: /my-repo/techradar # Path after domain, used to generate assets
+          base_dir: techradar             # Location for assets for GH Pages
           publish_to_pages: 'true'
 
 ```
