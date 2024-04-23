@@ -10,7 +10,7 @@ author: David Vega <dvega@flexion.us>
 inputs:
 
   directory:
-    description: 'Folder containing the tech radar data'
+    description: 'Folder containing the tech radar data within the repository'
     required: true
 
   artifact_name:
@@ -22,10 +22,18 @@ inputs:
     required: false
     default: "false"
 
-  public_url:
-    description: 'Public URL used for rendering and publishing the radar'
+  base_path:
+    description: 'Base path used to resolve assets after the domain, e.g. "/techradar"'
     required: false
-    default: "./build"
+    default: "/"
+
+  base_dir:
+    description: |
+      Base directory to build within export directory, can differ from
+      base path for GH Pages where the pages URL inclues repository name
+      as first segment
+    required: false
+    default: "/"
 
   radar_name:
     description: 'Name of the radar (optional)'
@@ -44,43 +52,82 @@ runs:
       uses: actions/checkout@v4
 
     - name: Setup node
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
-        node-version: 18
-
+        node-version: 20
 
     #TODO: Parametrize radar version
     #TODO: Extract to script
-    - name: Install AOE radar
+    - name: Install AOE radar & build static assets
       shell: bash
       working-directory: ${{ inputs.directory }}
       run: |
-        export PUBLIC_URL=${{ inputs.public_url }}
         export REACT_APP_RADAR_NAME="${{ inputs.radar_name }}"
 
-        npm ci
-        npx aoe_technology_radar-buildRadar
-        npx aoe_technology_radar-generateJson
-        npx aoe_technology_radar-createStaticFiles
-        PUBLIC_URL="${{ inputs.public_url }}" npm run build:static
+        sudo apt-get update
+        sudo apt-get install moreutils
+
+        pwd
+        ls -al
+
+        # If no package.json is present, copy the one from this action
+        if [ ! -f package.json ]; then
+          cp -r $GITHUB_ACTION_PATH/package.json .
+        fi
+
+        cat package.json
+
+        #If no config.json is present, create one with an empty object
+        if [ ! -f config.json ]; then
+          echo "{}" > config.json
+        fi
+
+        # Use jq to create/overwrite in-place the basePath in the config.json
+        jq \
+          --arg base_path "${{ inputs.base_path }}" \
+          --arg radar_name "${{ inputs.radar_name }}" \
+          '.basePath = $base_path
+          |
+          .labels.title = $radar_name' \
+          config.json \
+        | sponge config.json
+
+        cat config.json
+
+        # Install dependencies and build the radar
+        npm install
+
+        ls node_modules/.bin  # Debug: list the contents of node_modules/.bin
+
+        npm run build
+
+        export EXPORT_DIR=export/${{ inputs.base_dir }}
+
+        mkdir -p $EXPORT_DIR
+        cp -r build/* $EXPORT_DIR
+        chmod -R 755 $EXPORT_DIR
 
     - name: Upload artifact
       if: ${{ inputs.publish_to_pages == 'false' }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ inputs.artifact_name || 'tech-radar' }}
-        path: "${{ inputs.directory }}/build"
+        path: "${{ inputs.directory }}/export"
 
     - name: Setup Pages
       if: ${{ inputs.publish_to_pages == 'true' }}
-      uses: actions/configure-pages@v3
+      uses: actions/configure-pages@v5
+      # with:
+      #   static_site_generator: next
 
     - name: Upload artifact to Pages
-      uses: actions/upload-pages-artifact@v2
+      if: ${{ inputs.publish_to_pages == 'true' }}
+      uses: actions/upload-pages-artifact@v3
       with:
-        path: ${{ inputs.directory }}/build
+        path: ${{ inputs.directory }}/export
 
     #TODO: Add more deployment targets
     - name: Deploy to GitHub Pages
+      if: ${{ inputs.publish_to_pages == 'true' }}
       id: deployment
-      uses: actions/deploy-pages@v2
+      uses: actions/deploy-pages@v4
