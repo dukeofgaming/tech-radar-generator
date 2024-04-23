@@ -64,6 +64,9 @@ runs:
       run: |
         export REACT_APP_RADAR_NAME="${{ inputs.radar_name }}"
 
+        sudo apt-get update
+        sudo apt-get install sponge
+
         pwd
         ls -al
 
