@@ -86,8 +86,9 @@ runs:
         jq \
           --arg base_path "${{ inputs.base_path }}" \
           --arg radar_name "${{ inputs.radar_name }}" \
-          '.basePath = $base_path \
-          | .labels.title = $radar_name' \
+          '.basePath = $base_path
+          |
+          .labels.title = $radar_name' \
           config.json \
         | sponge config.json
 
