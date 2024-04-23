@@ -67,6 +67,14 @@ runs:
 
         cat package.json
 
+        # Use jq to generate config.json with basepath, default is "basePath": "/techradar"
+        jq \
+          -n \
+          --arg basepath "${PUBLIC_URL}" \
+          '{basePath: $basepath}' > config.json
+
+        cat config.json
+
         npm install
 
         ls node_modules/.bin  # Debug: list the contents of node_modules/.bin
