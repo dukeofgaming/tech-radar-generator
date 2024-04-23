@@ -68,9 +68,12 @@ runs:
         cat package.json
 
         npm install --no-package-lock
-        npm run build
-        npm run generateJson
-        npm run build:static
+
+        ls node_modules/.bin  # Debug: list the contents of node_modules/.bin
+
+        npx aoe_technology_radar buildRadar
+        npx aoe_technology_radar generateJson
+        npx aoe_technology_radar createStaticFiles
 
         PUBLIC_URL="${{ inputs.public_url }}" npm run build:static
 
