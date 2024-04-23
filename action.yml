@@ -86,7 +86,7 @@ runs:
         jq \
           --arg base_path "${{ inputs.base_path }}" \
           --arg radar_name "${{ inputs.radar_name }}" \
-          -f - \
+          -f -- \
           config.json \
           <<-'JQ_SCRIPT'
 
