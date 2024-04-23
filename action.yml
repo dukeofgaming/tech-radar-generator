@@ -10,7 +10,7 @@ author: David Vega <dvega@flexion.us>
 inputs:
 
   directory:
-    description: 'Folder containing the tech radar data'
+    description: 'Folder containing the tech radar data within the repository'
     required: true
 
   artifact_name:
@@ -58,7 +58,7 @@ runs:
 
     #TODO: Parametrize radar version
     #TODO: Extract to script
-    - name: Install AOE radar
+    - name: Install AOE radar & build static assets
       shell: bash
       working-directory: ${{ inputs.directory }}
       run: |
@@ -74,14 +74,21 @@ runs:
 
         cat package.json
 
-        # Use jq to generate config.json with basepath, default is "basePath": "/techradar"
+        #If no config.json is present, create one with an empty object
+        if [ ! -f config.json ]; then
+          echo "{}" > config.json
+        fi
+
+        # Use jq to create/overwrite in-place the basePath in the config.json
         jq \
-          -n \
-          --arg basepath "${{ inputs.base_path }}" \
-          '{basePath: $basepath}' > config.json
+          --arg base_path "${{ inputs.base_path }}" \
+          '.basePath = $base_path' \
+          config.json \
+        | sponge config.json
 
         cat config.json
 
+        # Install dependencies and build the radar
         npm install
 
         ls node_modules/.bin  # Debug: list the contents of node_modules/.bin
