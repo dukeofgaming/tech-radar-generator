@@ -94,7 +94,7 @@ runs:
               |
               .labels.title = $radar_name
 
-          JQ_SCRIPT \
+          JQ_SCRIPT
         | sponge config.json
 
         cat config.json
