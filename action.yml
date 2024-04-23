@@ -106,7 +106,7 @@ runs:
 
     - name: Upload artifact
       if: ${{ inputs.publish_to_pages == 'false' }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ inputs.artifact_name || 'tech-radar' }}
         path: "${{ inputs.directory }}/export"
@@ -119,7 +119,7 @@ runs:
 
     - name: Upload artifact to Pages
       if: ${{ inputs.publish_to_pages == 'true' }}
-      uses: actions/upload-pages-artifact@v2
+      uses: actions/upload-pages-artifact@v3
       with:
         path: ${{ inputs.directory }}/export
 
@@ -127,4 +127,4 @@ runs:
     - name: Deploy to GitHub Pages
       if: ${{ inputs.publish_to_pages == 'true' }}
       id: deployment
-      uses: actions/deploy-pages@v2
+      uses: actions/deploy-pages@v4
