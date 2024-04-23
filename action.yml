@@ -67,7 +67,7 @@ runs:
 
         cat package.json
 
-        npm install --no-package-lock
+        npm install
 
         ls node_modules/.bin  # Debug: list the contents of node_modules/.bin
 
