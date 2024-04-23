@@ -85,7 +85,11 @@ runs:
         # Use jq to create/overwrite in-place the basePath in the config.json
         jq \
           --arg base_path "${{ inputs.base_path }}" \
-          '.basePath = $base_path' \
+          --arg radar_name "${{ inputs.radar_name }}" \
+          <<-'JQ_SCRIPT'
+              .basePath = $base_path |
+              .labels.title = $radar_name
+          JQ_SCRIPT \
           config.json \
         | sponge config.json
 
