@@ -22,8 +22,16 @@ inputs:
     required: false
     default: "false"
 
-  public_url:
-    description: 'Public URL used for rendering and publishing the radar'
+  base_path:
+    description: 'Base path used to resolve assets after the domain, e.g. "/techradar"'
+    required: false
+    default: "/"
+
+  base_dir:
+    description: |
+      Base directory to build within export directory, can differ from
+      base path for GH Pages where the pages URL inclues repository name
+      as first segment
     required: false
     default: "/"
 
@@ -54,7 +62,6 @@ runs:
       shell: bash
       working-directory: ${{ inputs.directory }}
       run: |
-        export PUBLIC_URL=${{ inputs.public_url }}
         export REACT_APP_RADAR_NAME="${{ inputs.radar_name }}"
 
         pwd
@@ -70,7 +77,7 @@ runs:
         # Use jq to generate config.json with basepath, default is "basePath": "/techradar"
         jq \
           -n \
-          --arg basepath "${PUBLIC_URL}" \
+          --arg basepath "${{ inputs.base_path }}" \
           '{basePath: $basepath}' > config.json
 
         cat config.json
@@ -79,10 +86,9 @@ runs:
 
         ls node_modules/.bin  # Debug: list the contents of node_modules/.bin
 
-        PUBLIC_URL="${{ inputs.public_url }}"
         npm run build
 
-        export EXPORT_DIR=export/${{ inputs.public_url }}
+        export EXPORT_DIR=export/${{ inputs.base_dir }}
 
         mkdir -p $EXPORT_DIR
         cp -r build/* $EXPORT_DIR
