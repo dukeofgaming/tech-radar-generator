@@ -71,9 +71,9 @@ runs:
 
         ls node_modules/.bin  # Debug: list the contents of node_modules/.bin
 
+        PUBLIC_URL="${{ inputs.public_url }}"
         npm run build
 
-        PUBLIC_URL="${{ inputs.public_url }}" npm run build:static
 
     - name: Upload artifact
       if: ${{ inputs.publish_to_pages == 'false' }}
