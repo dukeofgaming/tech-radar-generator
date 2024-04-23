@@ -89,12 +89,10 @@ runs:
           -f /dev/stdin \
           config.json \
           <<-'JQ_SCRIPT'
-
-              .basePath = $base_path
-              |
-              .labels.title = $radar_name
-
-          JQ_SCRIPT
+            .basePath = $base_path
+            |
+            .labels.title = $radar_name
+        JQ_SCRIPT
         | sponge config.json
 
         cat config.json
