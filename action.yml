@@ -113,7 +113,7 @@ runs:
 
     - name: Setup Pages
       if: ${{ inputs.publish_to_pages == 'true' }}
-      uses: actions/configure-pages@v3 #v5
+      uses: actions/configure-pages@v5
       # with:
       #   static_site_generator: next
 
